@@ -34,6 +34,21 @@
             </div>
         </header>
 
+        <!-- 
+            Por que usar <section> ao invés de <div>?
+            - <section> é um elemento semântico que representa uma seção temática do conteúdo
+            - Geralmente contém um cabeçalho (como o h1 "Boa noite")
+            - Representa uma seção lógica da página que forma uma parte significativa do documento
+            - Ajuda os leitores de tela e mecanismos de busca a entenderem melhor a estrutura
+            - Neste caso, representa uma área específica de conteúdo musical com título e playlists
+
+            Quando usar <div>?
+            - É um elemento genérico sem valor semântico específico
+            - Usado principalmente para agrupamento e estilização
+            - Não transmite significado sobre o tipo de conteúdo
+            - Útil quando você precisa apenas de um container para CSS ou JavaScript
+            (como fizemos com a div class="playlists-grid" abaixo)
+        -->
         <section class="content">
             <h1>Boa noite</h1>
             <div class="playlists-grid">
