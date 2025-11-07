@@ -1,23 +1,59 @@
 /* Variáveis do tema */
 :root {
-    --color-background: #1a1133;
-    --color-surface: rgba(255, 255, 255, 0.1);
-    --color-primary: #39FF14;
-    --color-primary-dim: #32db12;
-    --color-text: #ffffff;
-    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    /* Cores principais */
+    --color-background: #0d0f1a;
+    --color-surface: rgba(30, 30, 50, 0.4);
+    --color-primary: #7b5cff;
+    --color-secondary: #00ffa3;
+    --color-text: #e0e0e0;
+    --color-text-secondary: rgba(224, 224, 224, 0.7);
+    
+    /* Efeitos e transições */
+    --transition-default: all 0.3s ease-in-out;
+    --glassmorphism: blur(12px);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Gradientes */
+    --gradient-background: radial-gradient(circle at top left, #1b1f3a, var(--color-background));
+    --gradient-text: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+    
+    /* Espaçamento */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
 }
+
+/* Comentários sobre design decisions:
+   1. Glassmorphism melhora a legibilidade criando contraste sutil entre
+      camadas através do efeito blur, que suaviza as bordas e cria profundidade
+      sem comprometer a visibilidade do conteúdo.
+   
+   2. Para garantir boa performance em animações CSS:
+      - Use transform e opacity em vez de propriedades que causam reflow
+      - Adicione will-change apenas quando necessário
+      - Evite animar muitos elementos simultaneamente
+      
+   3. Blur vs Transparência:
+      - Blur cria um efeito de profundidade processando pixels vizinhos
+      - Transparência simples apenas revela o conteúdo abaixo
+      - Combinados criam o efeito glassmorphism moderno
+*/
 
 /* Estilos base e reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: var(--transition-default);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: linear-gradient(45deg, var(--color-background), #2d1f4f);
+    font-family: 'Poppins', sans-serif;
+    background: var(--gradient-background);
     color: var(--color-text);
     min-height: 100vh;
     display: grid;
@@ -183,15 +219,18 @@ body {
 
 /* Container principal e grid de músicas */
 .container {
-    max-width: 100%;
-    margin: 1rem auto;
-    padding: 0 1.5rem;
-    flex: 1;
+    width: 100%;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha o conteúdo à esquerda da área principal */
 }
 
 /* Estilo para cada seção de gênero */
 .genero-section {
     margin-bottom: 2.5rem;
+    width: calc(100% - 250px); /* Alinha com a largura disponível */
+    margin-left: 250px; /* Alinha com o início da área principal */
 }
 
 .genero-section h2 {
@@ -200,59 +239,69 @@ body {
     margin-bottom: 1rem;
     padding-left: 0.5rem;
     color: #fff;
+    text-align: left;
 }
 
-/* Layout horizontal com rolagem */
+/* Grid de músicas com layout responsivo */
 .musicas-container {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-    /* Esconde a scrollbar no Chrome/Safari mas mantém a funcionalidade */
-    &::-webkit-scrollbar {
-        height: 6px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    width: calc(100% - 250px); /* Subtrai a largura da sidebar */
+    margin-left: 250px; /* Alinha com o início da área principal */
+    max-width: 1200px;
+}
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 3px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
 /* Cards de música com visual moderno */
 .musica-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 0.8rem;
-    transition: all 0.3s ease;
+    background: var(--color-surface);
+    border-radius: 16px;
+    padding: var(--spacing-md);
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    flex: 0 0 180px; /* Largura fixa de 180px, não permite shrink ou grow */
-    scroll-snap-align: start; /* Ajuda no alinhamento durante a rolagem */
+    gap: var(--spacing-sm);
+    backdrop-filter: var(--glassmorphism);
+    border: var(--card-border);
+    box-shadow: var(--card-shadow);
+    animation: cardEntrance 0.8s ease-out;
+    animation-fill-mode: both;
+    height: 100%;
+    width: 100%;
+    will-change: transform;
+    transition: var(--transition-default);
 }
 
 .musica-card:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px) scale(1.02);
+    background: rgba(40, 40, 60, 0.5);
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(123, 92, 255, 0.2);
 }
 
 .musica-card img {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 8px;
+    border-radius: 12px;
     object-fit: cover;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.musica-card:hover img {
+    transform: scale(1.05);
 }
 
 .musica-info {
@@ -274,36 +323,57 @@ body {
 
 /* Botão de play com animação suave e visual moderno */
 .play-button {
-    background: #2d87ff;
+    background: var(--color-primary);
     color: white;
     border: none;
     border-radius: 25px;
     padding: 0.75rem 1.5rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     align-self: flex-start;
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.play-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-text);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .play-button:hover {
-    background: #1a73e8;
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(45, 135, 255, 0.3);
+    box-shadow: 
+        0 0 20px rgba(123, 92, 255, 0.4),
+        0 0 40px rgba(123, 92, 255, 0.2);
+}
+
+.play-button:hover::before {
+    opacity: 1;
 }
 
 /* Footer com visual clean */
-/* Player fixo */
+/* Player fixo com glassmorphism moderno */
 .player-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(26, 17, 51, 0.95);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.75rem;
+    background: var(--color-surface);
+    backdrop-filter: var(--glassmorphism);
+    -webkit-backdrop-filter: var(--glassmorphism);
+    border-top: var(--card-border);
+    padding: var(--spacing-sm);
     z-index: 1000;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
 }
 
 .player-content {
@@ -401,11 +471,25 @@ body {
 /* O uso de backdrop-filter e gradientes sutis cria profundidade visual
    e uma sensação moderna de glass-morphism no design */
 
-/* Responsividade para telas pequenas */
+/* Responsividade para diferentes tamanhos de tela */
+@media (max-width: 1200px) {
+    .musicas-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--spacing-md);
+    }
+}
+
 @media (max-width: 768px) {
     .musicas-container {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 0.8rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: var(--spacing-sm);
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .genero-section {
+        width: 100%;
+        margin-left: 0;
     }
     
     .musica-card {
@@ -448,6 +532,10 @@ main {
     padding: 2rem;
     overflow-y: auto;
     height: calc(100vh - 160px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Hidden YouTube Player */
@@ -571,4 +659,31 @@ main {
     height: 100%;
     background-color: #1db954;
     border-radius: 2px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 4px;
+    transition: var(--transition-default);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) rgba(255, 255, 255, 0.05);
 }

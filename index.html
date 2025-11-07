@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; frame-src 'self' https://www.youtube.com; frame-ancestors 'self';">
+    <meta http-equiv="Permissions-Policy" content="accelerometer=(), autoplay=(), camera=(), clipboard-write=(), encrypted-media=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
     <title>Appolo Music</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="style.css">
@@ -67,6 +69,8 @@
                     <p class="player-artist">---</p>
                 </div>
             </div>
+            <audio id="audio-player" hidden></audio>
+            <div id="youtube-player"></div>
             
             <div class="player-controls">
                 <button class="control-button" id="prevButton">
